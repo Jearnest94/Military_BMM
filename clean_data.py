@@ -4,7 +4,7 @@ import pandas as pd
 def main():
     male_df = pd.read_csv('male.csv')
     male_cleaned = male_df[
-        ['stature', 'weightkg', 'chestcircumference', 'waistcircumference', 'crotchheight', 'buttockcircumference']]
+        ['stature', 'weightkg', 'chestcircumference', 'waistcircumference', 'crotchheight', 'buttockcircumference', 'Gender']]
     male_cleaned.insert(4, column="tshirt_size", value="-")
     male_cleaned.insert(4, column="pants_size", value="-")
     male_cleaned.insert(5, column="tshirt_color", value="-")
@@ -12,7 +12,7 @@ def main():
 
     female_df = pd.read_csv('female.csv')
     female_cleaned = female_df[
-        ['stature', 'weightkg', 'chestcircumference', 'waistcircumference', 'crotchheight', 'buttockcircumference']]
+        ['stature', 'weightkg', 'chestcircumference', 'waistcircumference', 'crotchheight', 'buttockcircumference', 'Gender']]
     female_cleaned.insert(4, column="tshirt_size", value="-")
     female_cleaned.insert(4, column="pants_size", value="-")
     female_cleaned.insert(5, column="tshirt_color", value="-")

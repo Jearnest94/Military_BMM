@@ -11,7 +11,6 @@ pd.options.mode.chained_assignment = None
 
 
 def main():
-    # Fixa cleaned_csv
     male_df = pd.read_csv('male_cleaned.csv')
     female_df = pd.read_csv('female_cleaned.csv')
 
@@ -20,7 +19,6 @@ def main():
     length = input("length(cm): ")
     weight = int(weight) * 10
     length = int(length) * 10
-    print(f'You are', gender)
 
     if gender.lower() == 'male':
         gender = male_df
@@ -61,26 +59,26 @@ def add_tshirt_size(gender):
         elif chest < 1120:
             if waist >= 965:
                 tshirt_size.append('X-Large')
-                tshirt_color.append('Pink')
+                tshirt_color.append('Mediumvioletred')
             else:
                 tshirt_size.append('Large')
                 tshirt_color.append('Red')
         elif chest < 1195:
             if waist >= 1015:
                 tshirt_size.append('XX-Large')
-                tshirt_color.append('Purple')
+                tshirt_color.append('Indigo')
             else:
                 tshirt_size.append('X-Large')
-                tshirt_color.append('Pink')
+                tshirt_color.append('Mediumvioletred')
         elif chest < 1270:
             tshirt_size.append('XX-Large')
-            tshirt_color.append('Blue')
+            tshirt_color.append('Indigo')
         elif chest < 1345:
             tshirt_size.append('XXX-Large')
             tshirt_color.append('Brown')
         elif chest < 1500:
             tshirt_size.append('XXXX-Large')
-            tshirt_color.append('Green')
+            tshirt_color.append('Indianred')
 
     gender['tshirt_size'] = tshirt_size
     gender['tshirt_color'] = tshirt_color
@@ -97,7 +95,7 @@ def add_pants_size_male(gender):
                 pants_color.append('Yellow')
             else:
                 pants_size.append('X-Small')
-                pants_color.append('White')
+                pants_color.append('Lightgreen')
         elif crotch < 820:
             if waist > 840:
                 pants_size.append('Medium')
@@ -115,26 +113,26 @@ def add_pants_size_male(gender):
         elif crotch < 850:
             if waist > 1000:
                 pants_size.append('X-Large')
-                pants_color.append('Pink')
+                pants_color.append('Mediumvioletred')
             else:
                 pants_size.append('Large')
                 pants_color.append('Red')
         elif crotch < 860:
             if waist > 1080:
                 pants_size.append('XX-Large')
-                pants_color.append('Purple')
+                pants_color.append('Indigo')
             else:
                 pants_size.append('X-Large')
-                pants_color.append('Pink')
+                pants_color.append('Mediumvioletred')
         elif crotch < 870:
             pants_size.append('XX-Large')
-            pants_color.append('Purple')
+            pants_color.append('Indigo')
         elif crotch < 880:
             pants_size.append('XXX-Large')
-            pants_color.append('Blue')
+            pants_color.append('Brown')
         elif crotch >= 880:
             pants_size.append('XXXX-Large')
-            pants_color.append('Brown')
+            pants_color.append('Indianred')
 
     gender['pants_size'] = pants_size
     gender['pants_color'] = pants_color
@@ -151,7 +149,7 @@ def add_pants_size_female(gender):
                 pants_color.append('Yellow')
             else:
                 pants_size.append('X-Small')
-                pants_color.append('White')
+                pants_color.append('Lightgreen')
         elif waist < 840:
             if butt >= 960:
                 pants_size.append('Medium')
@@ -169,24 +167,24 @@ def add_pants_size_female(gender):
         elif waist < 1000:
             if butt > 1080:
                 pants_size.append('X-Large')
-                pants_color.append('Pink')
+                pants_color.append('Mediumvioletred')
             else:
                 pants_size.append('Large')
                 pants_color.append('Red')
         elif waist < 1080:
             if butt > 1140:
                 pants_size.append('XX-Large')
-                pants_color.append('Purple')
+                pants_color.append('Indigo')
             else:
                 pants_size.append('X-Large')
-                pants_color.append('Pink')
+                pants_color.append('Mediumvioletred')
         elif waist >= 1080:
             if butt > 1200:
                 pants_size.append('XXX-Large')
-                pants_color.append('Blue')
+                pants_color.append('Brown')
             else:
                 pants_size.append('XX-Large')
-                pants_color.append('Purple')
+                pants_color.append('Indigo')
 
     gender['pants_size'] = pants_size
     gender['pants_color'] = pants_color
@@ -227,7 +225,12 @@ def sklearn_prediction(gender, weight, length):
 
 def drawgraph(gender):
     sns.set()
-    sns.scatterplot(y=gender['stature'], x=gender['weightkg'], c=gender['tshirt_color'])
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    input_gender = (gender['Gender'].value_counts().idxmax())
+    axes[0].set_title(f'{input_gender} T-Shirt sizes')
+    axes[1].set_title(f'{input_gender} Pants sizes')
+    sns.scatterplot(y=gender['stature'], x=gender['weightkg'], hue=gender['tshirt_size'], ax=axes[0], alpha=0.7)
+    sns.scatterplot(y=gender['stature'], x=gender['weightkg'], hue=gender['pants_size'], ax=axes[1], alpha=0.7)
     plt.show()
 
 
