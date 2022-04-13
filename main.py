@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 
 pd.options.mode.chained_assignment = None
@@ -25,7 +25,8 @@ def main():
         add_tshirt_size(gender)
         add_pants_size_male(gender)
         calculate_k_10(gender, weight, length)
-        sklearn_prediction(gender, weight, length)
+        sklearn_knn_prediction(gender, weight, length)
+        decision_tree_prediction(gender, weight, length)
         drawgraph(gender)
 
     else:
@@ -33,7 +34,8 @@ def main():
         add_tshirt_size(gender)
         add_pants_size_female(gender)
         calculate_k_10(gender, weight, length)
-        sklearn_prediction(gender, weight, length)
+        sklearn_knn_prediction(gender, weight, length)
+        decision_tree_prediction(gender, weight, length)
         drawgraph(gender)
 
 
@@ -201,26 +203,52 @@ def calculate_k_10(gender, weight, length):
 
     gender['closest'] = closest
     K = gender.sort_values(by=['closest']).head(10)
-    print(f'Recommended T-shirt size:', K['tshirt_size'].value_counts().idxmax())
-    print(f'Recommended Pants size:', K['pants_size'].value_counts().idxmax())
+    print(f'I Recommended T-shirt size:', K['tshirt_size'].value_counts().idxmax())
+    print(f'I Recommended Pants size:', K['pants_size'].value_counts().idxmax())
 
 
-def sklearn_prediction(gender, weight, length):
-    x = np.array(list(zip(gender['stature'], gender['weightkg'])))
+def sklearn_knn_prediction(gender, weight, length):
+    X = np.array(list(zip(gender['stature'], gender['weightkg'])))
     y_ts = np.array(gender['tshirt_size'])
     y_ps = np.array(gender['pants_size'])
-    x.reshape(1, -1)
+    X.reshape(1, -1)
 
     knn_ts = KNeighborsClassifier(n_neighbors=10)
-    knn_ts.fit(x, y_ts)
+    knn_ts.fit(X, y_ts)
     predicted_ts = knn_ts.predict([[length, weight]])
 
     knn_ps = KNeighborsClassifier(n_neighbors=10)
-    knn_ps.fit(x, y_ps)
+    knn_ps.fit(X, y_ps)
     predicted_ps = knn_ps.predict([[length, weight]])
 
     print(f'Sklearn KNeighborsClassifier suggests T-shirt size:', predicted_ts)
     print(f'Sklearn KNeighborsClassifier suggests Pants size:', predicted_ps)
+
+
+def decision_tree_prediction(gender, weight, length):
+    X = np.array(list(zip(gender['stature'], gender['weightkg'])))
+    y_ts = np.array(gender['tshirt_size'])
+    y_ps = np.array(gender['pants_size'])
+    X.reshape(1, -1)
+
+    # Train data
+    X_ts_train, X_ts_test, y_ts_train, y_ts_test = train_test_split(X, y_ts, random_state=42, test_size=0.33)
+    X_ps_train, X_ps_test, y_ps_train, y_ps_test = train_test_split(X, y_ps, random_state=42, test_size=0.33)
+
+    # Pruning T-shirt size decision tree
+    clf_dt_ts = DecisionTreeClassifier(random_state=42, ccp_alpha=0.0023)
+    clf_dt_ts = clf_dt_ts.fit(X_ts_train, y_ts_train)
+    predicted_ts = clf_dt_ts.predict([[length, weight]])
+    predicted_ts_score = clf_dt_ts.score(X_ts_test, y_ts_test)*100
+
+    # Pruning Pants size decision tree
+    clf_dt_ps = DecisionTreeClassifier(random_state=42, ccp_alpha=0.0021)
+    clf_dt_ps = clf_dt_ps.fit(X_ps_train, y_ps_train)
+    predicted_ps = clf_dt_ps.predict([[length, weight]])
+    predicted_ps_score = clf_dt_ps.score(X_ps_test, y_ps_test)*100
+
+    print(f'Sklearn Decision-Tree Classifier suggests T-shirt size: {predicted_ts} with a {predicted_ts_score:.2f}% certainty')
+    print(f'Sklearn Decision-Tree Classifier suggests Pants size: {predicted_ps} with a {predicted_ps_score:.2f}% certainty')
 
 
 def drawgraph(gender):
