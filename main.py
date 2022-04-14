@@ -239,16 +239,21 @@ def decision_tree_prediction(gender, weight, length):
     clf_dt_ts = DecisionTreeClassifier(random_state=42, ccp_alpha=0.0023)
     clf_dt_ts = clf_dt_ts.fit(X_ts_train, y_ts_train)
     predicted_ts = clf_dt_ts.predict([[length, weight]])
-    predicted_ts_score = clf_dt_ts.score(X_ts_test, y_ts_test)*100
+    predicted_ts_score = clf_dt_ts.score(X_ts_test, y_ts_test) * 100
 
     # Pruning Pants size decision tree
     clf_dt_ps = DecisionTreeClassifier(random_state=42, ccp_alpha=0.0021)
     clf_dt_ps = clf_dt_ps.fit(X_ps_train, y_ps_train)
     predicted_ps = clf_dt_ps.predict([[length, weight]])
-    predicted_ps_score = clf_dt_ps.score(X_ps_test, y_ps_test)*100
+    predicted_ps_score = clf_dt_ps.score(X_ps_test, y_ps_test) * 100
 
-    print(f'Sklearn Decision-Tree Classifier suggests T-shirt size: {predicted_ts} with a {predicted_ts_score:.2f}% certainty')
-    print(f'Sklearn Decision-Tree Classifier suggests Pants size: {predicted_ps} with a {predicted_ps_score:.2f}% certainty')
+    # I think the results partly vary because I have too few parameters when deciding T-Shirt/Pants size.
+    # If I took into account even more parameters, for example buttcircum, waistcircum and crotchheight together.
+    # Then maybe the results would be more consistent against each other.
+    print(
+        f'Sklearn Decision-Tree Classifier suggests T-shirt size: {predicted_ts} with a {predicted_ts_score:.2f}% certainty')
+    print(
+        f'Sklearn Decision-Tree Classifier suggests Pants size: {predicted_ps} with a {predicted_ps_score:.2f}% certainty')
 
 
 def drawgraph(gender):
